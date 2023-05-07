@@ -1,0 +1,3 @@
+﻿<Project>
+  <Import Project="..\build\Powerhouse_Fitness.props" />
+</Project>
