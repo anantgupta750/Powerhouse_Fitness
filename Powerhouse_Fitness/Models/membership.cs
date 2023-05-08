@@ -13,17 +13,17 @@ namespace Powerhouse_Fitness.Models
         [ForeignKey("user_registration")]
         public int UserId { get; set; }
 
-        [ForeignKey("program")]
+        [ForeignKey("Program")]
         public int ProgramId { get; set; }
 
-        public string ProgramName { get; set; }
+        public Program Program { get; set; }
 
 
         [ForeignKey("trainer")]
         public int TrainerId { get; set; }
 
         [Required]
-        public string TrainerName { get; set; }
+        public trainer trainer { get; set; }
 
         public string Duration { get; set; }
 
