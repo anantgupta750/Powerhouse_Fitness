@@ -30,11 +30,11 @@ public class User
 
 	[Required]
 	[DataType(DataType.Date)]
-	public DateOnly JoinDate { get; set; }
+	public DateTime JoinDate { get; set; }
 
 	[Required]
 	[DataType(DataType.Date)]
-	public DateOnly DateOfBirth { get; set; }
+	public DateTime DateOfBirth { get; set; }
 
 	[Required]
 	[RegularExpression(@"^\d{10}$", ErrorMessage = "Invalid mobile number")]

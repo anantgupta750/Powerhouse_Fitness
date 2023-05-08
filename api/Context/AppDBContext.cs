@@ -10,7 +10,7 @@ public class ApplicationDbContext : DbContext
 {
 	public DbSet<User> UserRegistrations { get; set; }
 
-	public DbSet<TrainingProgram> Program { get; set; }
+	public DbSet<TrainingProgram> TrainingPrograms { get; set; }
 
 	public DbSet<Trainer> Trainer { get; set; }
 

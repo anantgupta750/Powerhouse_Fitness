@@ -29,6 +29,7 @@ public class Membership
 
 	public string Duration { get; set; }
 
+	[DataType(DataType.Currency)]
 	public decimal Cost { get; set; }
 
 	[Required(ErrorMessage = "Payment details is required")]
