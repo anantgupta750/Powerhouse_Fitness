@@ -11,10 +11,10 @@ namespace Powerhouse_Fitness.Data
         {
             
         }
-        public DbSet<user_registeration> User_Registration { get; set; }
-        public DbSet<Models.Program> Program { get; set; }
-        public DbSet<trainer> Trainer { get; set; }
-        public DbSet<membership> Membership { get; set; }   
+        public DbSet<UserRegistration> User_Registration { get; set; }
+        public DbSet<Models.Programs> Program { get; set; }
+        public DbSet<Trainer> Trainer { get; set; }
+        public DbSet<Membership> Membership { get; set; }   
 
 
     }

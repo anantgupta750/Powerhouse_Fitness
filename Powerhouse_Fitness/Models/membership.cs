@@ -3,7 +3,7 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Powerhouse_Fitness.Models
 {
-    public class membership
+    public class Membership
     { 
         [Key]
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
@@ -13,17 +13,17 @@ namespace Powerhouse_Fitness.Models
         [ForeignKey("user_registration")]
         public int UserId { get; set; }
 
-        [ForeignKey("Program")]
+        [ForeignKey("Programs")]
         public int ProgramId { get; set; }
 
-        public Program Program { get; set; }
+        public Programs Programs { get; set; }
 
 
-        [ForeignKey("trainer")]
+        [ForeignKey("Trainer")]
         public int TrainerId { get; set; }
 
         [Required]
-        public trainer trainer { get; set; }
+        public Trainer Trainer { get; set; }
 
         public string Duration { get; set; }
 

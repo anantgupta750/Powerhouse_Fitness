@@ -3,7 +3,7 @@ using System.ComponentModel.DataAnnotations;
 
 namespace Powerhouse_Fitness.Models
 {
-    public class trainer
+    public class Trainer
     {
         [Key]
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
