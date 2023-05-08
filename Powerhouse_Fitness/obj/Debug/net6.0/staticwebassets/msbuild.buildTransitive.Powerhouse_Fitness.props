@@ -1,3 +1,0 @@
-﻿<Project>
-  <Import Project="..\buildMultiTargeting\Powerhouse_Fitness.props" />
-</Project>
