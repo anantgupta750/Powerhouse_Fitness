@@ -1,17 +1,22 @@
-using Powerhouse_Fitness.Data;
 using Microsoft.EntityFrameworkCore;
+using API.Context;
 
 var builder = WebApplication.CreateBuilder(args);
+
+const string cONNECTION_STRING_KEY = "MyConnection";
 
 // Add services to the container.
 
 builder.Services.AddControllers();
-// Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
+
 builder.Services.AddEndpointsApiExplorer();
+
 builder.Services.AddSwaggerGen();
+
 builder.Services.AddDbContext<ApplicationDbContext>(option =>
 {
-   option.UseSqlServer(builder.Configuration.GetConnectionString("MyConnection"));
+	var connectionString = builder.Configuration.GetConnectionString(cONNECTION_STRING_KEY);
+	option.UseSqlServer(connectionString);
 });
 
 var app = builder.Build();
@@ -19,8 +24,8 @@ var app = builder.Build();
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
 {
-    app.UseSwagger();
-    app.UseSwaggerUI();
+	app.UseSwagger();
+	app.UseSwaggerUI();
 }
 
 app.UseHttpsRedirection();

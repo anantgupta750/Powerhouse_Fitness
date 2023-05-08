@@ -1,36 +1,37 @@
 ﻿using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
-namespace Powerhouse_Fitness.Models
+namespace API.Models;
+
+#nullable disable
+
+public class Membership
 {
-    public class Membership
-    { 
-        [Key]
-        [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
+	[Key]
+	[DatabaseGenerated(DatabaseGeneratedOption.Identity)]
+	public int ID { get; set; }
 
-        public int MembershipId { get; set; }
+	[ForeignKey(nameof(User))]
+	public int UserId { get; set; }
 
-        [ForeignKey("user_registration")]
-        public int UserId { get; set; }
+	public User User { get; set; }
 
-        [ForeignKey("Programs")]
-        public int ProgramId { get; set; }
+	[ForeignKey(nameof(TrainingProgram))]
+	public int TrainerProgramID { get; set; }
 
-        public Programs Programs { get; set; }
+	public TrainingProgram TrainingProgram { get; set; }
 
+	[ForeignKey("Trainer")]
+	public int TrainerId { get; set; }
 
-        [ForeignKey("Trainer")]
-        public int TrainerId { get; set; }
+	[Required]
+	public Trainer Trainer { get; set; }
 
-        [Required]
-        public Trainer Trainer { get; set; }
+	public string Duration { get; set; }
 
-        public string Duration { get; set; }
+	public decimal Cost { get; set; }
 
-        public decimal Cost { get; set; }
-
-        [Required(ErrorMessage = "Payment details is required")]
-        [MaxLength(100)]
-        public string Payment { get; set; }
-    }
+	[Required(ErrorMessage = "Payment details is required")]
+	[MaxLength(100)]
+	public string Payment { get; set; }
 }
