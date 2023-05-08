@@ -22,6 +22,7 @@ namespace Powerhouse_Fitness.Models
         [ForeignKey("trainer")]
         public int TrainerId { get; set; }
 
+        [Required]
         public string TrainerName { get; set; }
 
         public string Duration { get; set; }
