@@ -26,9 +26,9 @@ public class Membership
 
 	[Required]
 	public Trainer Trainer { get; set; }
-
+	[Required]
 	public string Duration { get; set; }
-
+	[Required]
 	[DataType(DataType.Currency)]
 	public decimal Cost { get; set; }
 
