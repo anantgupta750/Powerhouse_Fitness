@@ -1,10 +1,10 @@
-using API.Context;
+﻿using API.Context;
 
 using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
 
-const string cONNECTION_STRING_KEY = "AzureSqlEdgeConnection";
+const string cONNECTION_STRING_KEY = "MyConnection";
 
 // Add services to the container.
 
