@@ -10,7 +10,7 @@ using System.Threading.Tasks;
 namespace API.Controllers
 {
 	[ApiController]
-	[Route("api/[controller]")]
+	[Route("api/[controller]")] // [Route("api/Users")] this can also be used only for this cntr.
 	public class UsersController : ControllerBase
 	{
 		private readonly ApplicationDbContext _context;
