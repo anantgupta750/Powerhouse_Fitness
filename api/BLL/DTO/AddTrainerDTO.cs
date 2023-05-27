@@ -1,12 +1,9 @@
-﻿using System.ComponentModel.DataAnnotations.Schema;
-using System.ComponentModel.DataAnnotations;
+﻿using System.ComponentModel.DataAnnotations;
 
-namespace API.Models;
+namespace Api.BLL.DTO;
 
-public class Trainer
+public class AddTrainerDTO
 {
-	[Key]
-	[DatabaseGenerated(DatabaseGeneratedOption.Identity)]
 	public int TrainerId { get; set; }
 
 	[Required(ErrorMessage = $"{nameof(Name)} is required")]
@@ -30,6 +27,4 @@ public class Trainer
 	[Required(ErrorMessage = $"{nameof(Address)} is required")]
 	[MaxLength(100)]
 	public string? Address { get; set; }
-
-	
 }

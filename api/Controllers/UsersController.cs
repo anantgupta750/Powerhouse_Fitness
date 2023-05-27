@@ -1,105 +1,78 @@
-﻿using API.Context;
+﻿using Api.BLL.DTO;
+using Api.DAL.Interface;
+
 using API.Models;
-
+using AutoMapper;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
 
-using System.Collections.Generic;
-using System.Threading.Tasks;
+namespace Api.Controller;
 
-namespace API.Controllers
+[Route("api/[controller]")]
+[ApiController]
+
+public class UsersController : ControllerBase
 {
-	[ApiController]
-	[Route("api/[controller]")]
-	public class UsersController : ControllerBase
+
+	private readonly IMapper _mapper;
+	private readonly IUserRepository _userRepository;
+
+	public UsersController(IUserRepository userRepository, IMapper mapper)
 	{
-		private readonly ApplicationDbContext _context;
 
-		public UsersController(ApplicationDbContext context)
-		{
-			_context = context;
-		}
-
-		// GET: api/Users
-		[HttpGet]
-		public async Task<ActionResult<IEnumerable<User>>> GetUsers()
-		{
-			return await _context.UserRegistrations.ToListAsync();
-		}
-
-		// GET: api/Users/5
-		[HttpGet("{id}")]
-		public async Task<ActionResult<User>> GetUser(int id)
-		{
-			var user = await _context.UserRegistrations.FindAsync(id);
-
-			if (user == null)
-			{
-				return NotFound();
-			}
-
-			return user;
-		}
-
-		// POST: api/Users
-		[HttpPost]
-		public async Task<ActionResult<User>> PostUser(User user)
-		{
-			_context.UserRegistrations.Add(user);
-			await _context.SaveChangesAsync();
-
-			return CreatedAtAction(nameof(GetUser), new { id = user.ID }, user);
-		}
-
-		// PUT: api/Users/5
-		[HttpPut("{id}")]
-		public async Task<IActionResult> PutUser(int id, User user)
-		{
-			if (id != user.ID)
-			{
-				return BadRequest();
-			}
-
-			_context.Entry(user).State = EntityState.Modified;
-
-			try
-			{
-				await _context.SaveChangesAsync();
-			}
-			catch (DbUpdateConcurrencyException)
-			{
-				if (!UserExists(id))
-				{
-					return NotFound();
-				}
-				else
-				{
-					throw;
-				}
-			}
-
-			return NoContent();
-		}
-
-		// DELETE: api/Users/5
-		[HttpDelete("{id}")]
-		public async Task<IActionResult> DeleteUser(int id)
-		{
-			var user = await _context.UserRegistrations.FindAsync(id);
-			if (user == null)
-			{
-				return NotFound();
-			}
-
-			_context.UserRegistrations.Remove(user);
-			await _context.SaveChangesAsync();
-
-			return NoContent();
-		}
-
-		private bool UserExists(int id)
-		{
-			return _context.UserRegistrations.Any(e => e.ID == id);
-		}
+		_mapper = mapper;
+		_userRepository = userRepository;
 	}
+	[HttpGet]
+	public async Task<IActionResult> GetAllUsers()
+	{
+		var users = await _userRepository.GetAllAsync();
+		var userDtos = _mapper.Map<IEnumerable<AddUserDTO>>(users);
+		return Ok(userDtos);
+	}
+	[HttpGet("{id}")]
+	public async Task<IActionResult> GetUser(int id)
+	{
+		var user = await _userRepository.GetByIdAsync(id);
+		if (user == null)
+			return NotFound();
+		var userDto = _mapper.Map<AddUserDTO>(user);
+		return Ok(userDto);
+	}
+	[HttpPost]
+	public async Task<IActionResult> CreateUser(AddUserDTO userDto)
+	{
+		if (!ModelState.IsValid)
+			return BadRequest(ModelState);
+
+		var user = _mapper.Map<User>(userDto);
+
+		await _userRepository.AddAsync(user);
+		var createdUserDto = _mapper.Map<AddUserDTO>(user);
+		return Ok(createdUserDto);
+	}
+	[HttpPut("{id}")]
+	public async Task<IActionResult> UpdateUser(int id, AddUserDTO userDto)
+	{
+
+		var existingUser = await _userRepository.GetByIdAsync(id);
+		if (existingUser == null)
+			return NotFound();
+
+		_mapper.Map(userDto, existingUser);
+
+		await _userRepository.UpdateAsync(existingUser);
+		return NoContent();
+	}
+	[HttpDelete("{id}")]
+	public async Task<IActionResult> DeleteUser(int id)
+	{
+		var existingUser = await _userRepository.GetByIdAsync(id);
+		if (existingUser == null)
+			return NotFound();
+
+		await _userRepository.DeleteAsync(existingUser);
+		return Ok("User deleted sauccessfully");
+	}
+
+
 }

@@ -1,4 +1,5 @@
 ﻿using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace API.Models;
 
@@ -7,6 +8,7 @@ namespace API.Models;
 public class TrainingProgram
 {
 	[Key]
+	[DatabaseGenerated(DatabaseGeneratedOption.Identity)]
 	public int ProgramId { get; set; }
 
 	[Required(ErrorMessage = $"{nameof(Name)} is required")]
@@ -14,8 +16,9 @@ public class TrainingProgram
 	public string Name { get; set; }
 
 	[Required(ErrorMessage = $"{nameof(Duration)} is required")]
-	[DataType(DataType.Duration)]
-	public TimeSpan Duration { get; set; }
+	[DataType(DataType.Date)]
+
+	public DateTime Duration { get; set; }
 
 	[Required(ErrorMessage = $"{nameof(Description)} is required")]
 	[MaxLength(1000)]
@@ -24,5 +27,10 @@ public class TrainingProgram
 	[Required(ErrorMessage = $"{nameof(Cost)} is required")]
 	[DataType(DataType.Currency)]
 	public decimal Cost { get; set; }
+
+	[ForeignKey("Trainer")]
+	public int TrainerId { get; set; }
+	public Trainer Trainers { get; set; }
+
 
 }

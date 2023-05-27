@@ -1,19 +1,10 @@
 ﻿using System.ComponentModel.DataAnnotations;
-using System.ComponentModel.DataAnnotations.Schema;
 
-using Api.Models;
+namespace Api.BLL.DTO;
 
-namespace API.Models;
-
-
-#nullable disable
-
-public class User
+public class AddUserDTO
 {
-	[Key]
-	[DatabaseGenerated(DatabaseGeneratedOption.Identity)]
 	public int UserId { get; set; }
-
 	[Required(ErrorMessage = "First name is required")]
 	public string FirstName { get; set; }
 
@@ -28,7 +19,6 @@ public class User
 	[DataType(DataType.Password)]
 	[StringLength(100, MinimumLength = 8)]
 	public string Password { get; set; }
-
 
 	[Required]
 	public string Gender { get; set; }
@@ -48,10 +38,5 @@ public class User
 	[Required]
 	[MaxLength(100)]
 	public string Address { get; set; }
-
-	[ForeignKey("Role")]
-	public int roleId { get; set; }
-
-	public Role Roles { get; set; }
-
+	public int RoleId { get; set; }
 }
