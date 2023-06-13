@@ -5,7 +5,7 @@ using System.Security.Claims;
 
 using Microsoft.AspNetCore.Mvc;
 
-using SwapPortal_API.Infrastructure;
+using Api.Helper;
 using Api.BLL.DTO;
 using AutoMapper;
 using Microsoft.EntityFrameworkCore;

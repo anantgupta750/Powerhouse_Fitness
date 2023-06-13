@@ -25,11 +25,7 @@ public class Membership
 	public int TrainerId { get; set; }
 
 	public Trainer Trainer { get; set; }
-	[Required]
-	public string Duration { get; set; }
-	[Required]
-	[DataType(DataType.Currency)]
-	public decimal Cost { get; set; }
+	
 
 	[Required(ErrorMessage = "Payment details is required")]
 	[MaxLength(100)]

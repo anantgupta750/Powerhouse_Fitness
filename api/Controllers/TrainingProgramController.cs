@@ -1,12 +1,11 @@
-﻿/*using API.Models;
-using API.Context;
+﻿
 
+using Api.BLL.DTO;
+using Api.DAL.Interface;
+using API.Models;
+using AutoMapper;
 
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
-
-using System.Collections.Generic;
-using System.Threading.Tasks;
 
 namespace API.Controllers
 {
@@ -14,94 +13,69 @@ namespace API.Controllers
 	[Route("api/[controller]")]
 	public class TrainingProgramController : ControllerBase
 	{
-		private readonly ApplicationDbContext _context;
 
-		public TrainingProgramController(ApplicationDbContext context)
+		private readonly IMapper _mapper;
+		private readonly ITrainingProgramRepository _trainingProgramRepository;
+
+		public TrainingProgramController(ITrainingProgramRepository trainingProgramRepository, IMapper mapper)
 		{
-			_context = context;
-		}
 
-		// GET: api/TrainingPrograms
+			_mapper = mapper;
+			_trainingProgramRepository = trainingProgramRepository;
+		}
 		[HttpGet]
-		public async Task<ActionResult<IEnumerable<TrainingProgram>>> GetTrainingPrograms()
+		public async Task<IActionResult> GetAllTrainingProgram()
 		{
-			return await _context.TrainingPrograms.ToListAsync();
+			var trainingProgram = await _trainingProgramRepository.GetAllAsync();
+			var trainingProgramDtos = _mapper.Map<IEnumerable<AddTrainingProgramDTO>>(trainingProgram);
+			return Ok(trainingProgramDtos);
 		}
-
-		// GET: api/TrainingPrograms/5
 		[HttpGet("{id}")]
-		public async Task<ActionResult<TrainingProgram>> GetTrainingProgram(int id)
+		public async Task<IActionResult> GetTrainingProgram(int id)
 		{
-			var trainingProgram = await _context.TrainingPrograms.FindAsync(id);
-
+			var trainingProgram = await _trainingProgramRepository.GetByIdAsync(id);
 			if (trainingProgram == null)
-			{
 				return NotFound();
-			}
-
-			return trainingProgram;
+			var trainingProgramDto = _mapper.Map<AddTrainingProgramDTO>(trainingProgram);
+			return Ok(trainingProgramDto);
 		}
-
-		// POST: api/TrainingPrograms
 		[HttpPost]
-		public async Task<ActionResult<TrainingProgram>> CreateTrainingProgram(TrainingProgram trainingProgram)
+		public async Task<IActionResult> CreateTrainingProgram(AddTrainingProgramDTO trainingProgramDto)
 		{
-			_context.TrainingPrograms.Add(trainingProgram);
-			await _context.SaveChangesAsync();
+			if (!ModelState.IsValid)
+				return BadRequest(ModelState);
 
-			return CreatedAtAction(nameof(GetTrainingProgram), new { id = trainingProgram.ProgramId }, trainingProgram);
+			var trainingProgram = _mapper.Map<TrainingProgram>(trainingProgramDto);
+
+			await _trainingProgramRepository.AddAsync(trainingProgram);
+			var createdtrainingProgramDto = _mapper.Map<AddTrainingProgramDTO>(trainingProgram);
+			return Ok(createdtrainingProgramDto);
 		}
-
-		// PUT: api/TrainingPrograms/5
 		[HttpPut("{id}")]
-		public async Task<IActionResult> UpdateTrainingProgram(int id, TrainingProgram trainingProgram)
+		public async Task<IActionResult> UpdateTrainer(int id, AddTrainingProgramDTO trainingProgramDto)
 		{
-			if (id != trainingProgram.ProgramId)
-			{
-				return BadRequest();
-			}
 
-			_context.Entry(trainingProgram).State = EntityState.Modified;
+			var existingTrainingProgram = await _trainingProgramRepository.GetByIdAsync(id);
+			if (existingTrainingProgram== null)
+				return NotFound();
 
-			try
-			{
-				await _context.SaveChangesAsync();
-			}
-			catch (DbUpdateConcurrencyException)
-			{
-				if (!TrainingProgramExists(id))
-				{
-					return NotFound();
-				}
-				else
-				{
-					throw;
-				}
-			}
+			_mapper.Map(trainingProgramDto, existingTrainingProgram);
 
+			await _trainingProgramRepository.UpdateAsync(existingTrainingProgram);
 			return NoContent();
 		}
-
-		// DELETE: api/TrainingPrograms/5
 		[HttpDelete("{id}")]
 		public async Task<IActionResult> DeleteTrainingProgram(int id)
 		{
-			var trainingProgram = await _context.TrainingPrograms.FindAsync(id);
-			if (trainingProgram == null)
-			{
+			var existingTrainingProgram = await _trainingProgramRepository.GetByIdAsync(id);
+			if (existingTrainingProgram == null)
 				return NotFound();
-			}
 
-			_context.TrainingPrograms.Remove(trainingProgram);
-			await _context.SaveChangesAsync();
-
-			return NoContent();
+			await _trainingProgramRepository.DeleteAsync(existingTrainingProgram);
+			return Ok("Program deleted sauccessfully");
 		}
 
-		private bool TrainingProgramExists(int id)
-		{
-			return _context.TrainingPrograms.Any(e => e.ProgramId == id);
-		}
+
 	}
+
 }
-*/

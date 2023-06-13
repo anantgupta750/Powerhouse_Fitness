@@ -37,6 +37,4 @@ public class ApplicationDbContext : DbContext
 					roleName = "User"
 				});
 	}
-
-
 }

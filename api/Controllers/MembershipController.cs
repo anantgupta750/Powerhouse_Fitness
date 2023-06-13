@@ -1,107 +1,81 @@
-﻿/*using API.Models;
-using API.Context;
+﻿using Api.BLL.DTO;
+using Api.DAL.Interface;
 
+using API.Models;
+
+using AutoMapper;
 
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
-
-using System.Collections.Generic;
-using System.Threading.Tasks;
 
 namespace API.Controllers
 {
 	[ApiController]
 	[Route("api/[controller]")]
-	public class MembershipsController : ControllerBase
+	public class MembershipController : ControllerBase
 	{
-		private readonly ApplicationDbContext _context;
 
-		public MembershipsController(ApplicationDbContext context)
+		private readonly IMapper _mapper;
+		private readonly IMembershipRepository _membershipRepository;
+
+		public MembershipController(IMembershipRepository membershipRepository, IMapper mapper)
 		{
-			_context = context;
-		}
 
-		// GET: api/Memberships
+			_mapper = mapper;
+			_membershipRepository = membershipRepository;
+		}
 		[HttpGet]
-		public async Task<ActionResult<IEnumerable<Membership>>> GetMemberships()
+		public async Task<IActionResult> GetAllMemberships()
 		{
-			return await _context.Membership.ToListAsync();
+			var membership = await _membershipRepository.GetAllAsync();
+			var membershipDtos = _mapper.Map<IEnumerable<AddMembershipDTO>>(membership);
+			return Ok(membershipDtos);
 		}
-
-		// GET: api/Memberships/5
 		[HttpGet("{id}")]
-		public async Task<ActionResult<Membership>> GetMembership(int id)
+		public async Task<IActionResult> GetMembership(int id)
 		{
-			var membership = await _context.Membership.FindAsync(id);
-
+			var membership = await _membershipRepository.GetByIdAsync(id);
 			if (membership == null)
-			{
 				return NotFound();
-			}
-
-			return membership;
+			var membershipDto = _mapper.Map<AddMembershipDTO>(membership);
+			return Ok(membershipDto);
 		}
-
-		// POST: api/Memberships
 		[HttpPost]
-		public async Task<ActionResult<Membership>> CreateMembership(Membership membership)
+		public async Task<IActionResult> CreateMembership(AddMembershipDTO membershipDto)
 		{
-			_context.Membership.Add(membership);
-			await _context.SaveChangesAsync();
+			if (!ModelState.IsValid)
+				return BadRequest(ModelState);
 
-			return CreatedAtAction(nameof(GetMembership), new { id = membership.MembershipId }, membership);
+			var membership = _mapper.Map<Membership>(membershipDto);
+
+			await _membershipRepository.AddAsync(membership);
+			var createdmembershipDto = _mapper.Map<AddMembershipDTO>(membership);
+			return Ok(createdmembershipDto);
 		}
-
-		// PUT: api/Memberships/5
 		[HttpPut("{id}")]
-		public async Task<IActionResult> UpdateMembership(int id, Membership membership)
+		public async Task<IActionResult> UpdateMembership(int id, AddMembershipDTO membershipDto)
 		{
-			if (id != membership.ID)
-			{
-				return BadRequest();
-			}
 
-			_context.Entry(membership).State = EntityState.Modified;
-
-			try
-			{
-				await _context.SaveChangesAsync();
-			}
-			catch (DbUpdateConcurrencyException)
-			{
-				if (!MembershipExists(id))
-				{
-					return NotFound();
-				}
-				else
-				{
-					throw;
-				}
-			}
-
-			return NoContent();
-		}
-
-		// DELETE: api/Memberships/5
-		[HttpDelete("{id}")]
-		public async Task<IActionResult> DeleteMembership(int id)
-		{
-			var membership = await _context.Membership.FindAsync(id);
-			if (membership == null)
-			{
+			var existingmembership = await _membershipRepository.GetByIdAsync(id);
+			if (existingmembership == null)
 				return NotFound();
-			}
 
-			_context.Membership.Remove(membership);
-			await _context.SaveChangesAsync();
+			_mapper.Map(membershipDto, existingmembership);
 
+			await _membershipRepository.UpdateAsync(existingmembership);
 			return NoContent();
 		}
-
-		private bool MembershipExists(int id)
+		[HttpDelete("{id}")]
+		public async Task<IActionResult> Deletemembership(int id)
 		{
-			return _context.Membership.Any(e => e.ID == id);
+			var existingmembership = await _membershipRepository.GetByIdAsync(id);
+			if (existingmembership == null)
+				return NotFound();
+
+			await _membershipRepository.DeleteAsync(existingmembership);
+			return Ok("User deleted sauccessfully");
 		}
+
+
 	}
+
 }
-*/

@@ -13,5 +13,7 @@ public class ApplicationMapper : Profile
 		CreateMap<User, AddUserDTO>().ReverseMap();
 		CreateMap<User, AuthUserLogin>().ReverseMap();
 		CreateMap<Trainer, AddTrainerDTO>().ReverseMap();
+		CreateMap<TrainingProgram, AddTrainingProgramDTO>().ReverseMap();
+		CreateMap<Membership, AddMembershipDTO>().ReverseMap();
 	}
 }
