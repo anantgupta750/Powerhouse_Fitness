@@ -7,11 +7,13 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace Api.Controller;
 
-[Route("api/[controller]")]
-[ApiController]
-
-public class UsersController : ControllerBase
+namespace API.Controllers
 {
+	[ApiController]
+	[Route("api/[controller]")] // [Route("api/Users")] this can also be used only for this cntr.
+	public class UsersController : ControllerBase
+	{
+		private readonly ApplicationDbContext _context;
 
 	private readonly IMapper _mapper;
 	private readonly IUserRepository _userRepository;
@@ -71,7 +73,7 @@ public class UsersController : ControllerBase
 			return NotFound();
 
 		await _userRepository.DeleteAsync(existingUser);
-		return Ok("User deleted sauccessfully");
+		return Ok("User deleted successfully");
 	}
 
 
