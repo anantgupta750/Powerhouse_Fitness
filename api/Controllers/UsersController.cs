@@ -47,6 +47,13 @@ namespace API.Controllers
 			if (!ModelState.IsValid)
 				return BadRequest(ModelState);
 
+			var existingUser = await _userRepository.GetByEmailAsync(userDto.Email);
+			if (existingUser != null)
+			{
+				ModelState.AddModelError("Email", "User with the same email already exists");
+				return BadRequest(ModelState);
+			}
+
 			var user = _mapper.Map<User>(userDto);
 
 			await _userRepository.AddAsync(user);

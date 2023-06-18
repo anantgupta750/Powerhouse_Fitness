@@ -1,4 +1,6 @@
-﻿namespace Api.DAL.Interface;
+﻿using API.Models;
+
+namespace Api.DAL.Interface;
 
 public interface IRepository<T> where T : class
 {
@@ -8,4 +10,5 @@ public interface IRepository<T> where T : class
 	Task AddAsync(T entity);
 	Task UpdateAsync(T entity);
 	Task DeleteAsync(T entity);
+	//Task GetByEmailAsync(T email);
 }

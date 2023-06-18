@@ -11,9 +11,9 @@ public class AddTrainingProgramDTO
 	public string Name { get; set; }
 
 	[Required(ErrorMessage = $"{nameof(Duration)} is required")]
-	[DataType(DataType.Date)]
+	//[DataType(DataType.Date)]
 
-	public DateTime Duration { get; set; }
+	public int Duration { get; set; }
 
 	[Required(ErrorMessage = $"{nameof(Description)} is required")]
 	[MaxLength(1000)]

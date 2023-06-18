@@ -72,7 +72,7 @@ namespace API.Controllers
 				return NotFound();
 
 			await _trainingProgramRepository.DeleteAsync(existingTrainingProgram);
-			return Ok("Program deleted sauccessfully");
+			return Ok("Program deleted successfully");
 		}
 
 
