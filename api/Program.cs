@@ -17,20 +17,18 @@ using Swashbuckle.AspNetCore.Filters;
 
 var builder = WebApplication.CreateBuilder(args);
 
-const string cONNECTION_STRING_KEY = "MyConnection";
+const string CONNECTION_STRING_KEY = "MyConnection";
 
 // Add services to the container.
-
 builder.Services.AddControllers();
-
 builder.Services.AddEndpointsApiExplorer();
 
-
-builder.Services.AddDbContext<ApplicationDbContext>(option =>
+builder.Services.AddDbContext<ApplicationDbContext>(options =>
 {
-	var connectionString = builder.Configuration.GetConnectionString(cONNECTION_STRING_KEY);
-	option.UseSqlServer(connectionString);
+	var connectionString = builder.Configuration.GetConnectionString(CONNECTION_STRING_KEY);
+	options.UseSqlServer(connectionString);
 });
+
 builder.Services.AddAutoMapper(typeof(Program));
 builder.Services.AddScoped<IUserRepository, UserRepository>();
 builder.Services.AddScoped<ILoginRepository, LoginRepository>();
@@ -38,40 +36,38 @@ builder.Services.AddScoped<ITrainerRepository, TrainerRepository>();
 builder.Services.AddScoped<ITrainingProgramRepository, TrainingProgramRepository>();
 builder.Services.AddScoped<IMembershipRepository, MembershipRepository>();
 
+builder.Services.AddCors(options => options.AddDefaultPolicy(builder => builder.AllowAnyOrigin()
+			   .AllowAnyMethod()
+			   .AllowAnyHeader()));
+
 builder.Services.AddAuthentication(options =>
 {
 	options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
 	options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
-
-
-}).AddJwtBearer(options =>
+}).AddJwtBearer(options => options.TokenValidationParameters = new TokenValidationParameters
 {
-	options.TokenValidationParameters = new TokenValidationParameters
-	{
-		ValidateIssuerSigningKey = true,
-		ValidateIssuer = false,
-		ValidateAudience = false,
-		ValidateLifetime = false,
-		ClockSkew = TimeSpan.Zero,
-		ValidIssuer = builder.Configuration["JWT : Issuer"],
-		ValidAudience = builder.Configuration["JWT : Audience"],
-		IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(builder.Configuration
-		["JWT:Key"]))
-	};
+	ValidateIssuerSigningKey = true,
+	ValidateIssuer = false,
+	ValidateAudience = false,
+	ValidateLifetime = false,
+	ClockSkew = TimeSpan.Zero,
+	ValidIssuer = builder.Configuration["JWT:Issuer"],
+	ValidAudience = builder.Configuration["JWT:Audience"],
+	IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(builder.Configuration["JWT:Key"]))
 });
 
 builder.Services.AddSwaggerGen(options =>
 {
-	options.AddSecurityDefinition("oauth2", new Microsoft.OpenApi.Models.OpenApiSecurityScheme
+	options.AddSecurityDefinition("oauth2", new OpenApiSecurityScheme
 	{
 		Description = "Standard Authorization header using the Bearer scheme(\"bearer {token}\")",
 		In = ParameterLocation.Header,
 		Name = "Authentication",
 		Type = SecuritySchemeType.ApiKey
-
 	});
 	options.OperationFilter<SecurityRequirementsOperationFilter>();
 });
+
 builder.Services.AddAuthorization(options =>
 {
 	options.AddPolicy("AdminOnly", policy => policy.RequireRole("Admin"));
@@ -87,7 +83,9 @@ if (app.Environment.IsDevelopment())
 	app.UseSwaggerUI();
 }
 
-app.UseMiddleware<ExceptionHandler>();
+app.UseCors();
+
+//app.UseMiddleware<ExceptionHandler>();
 app.UseHttpsRedirection();
 app.UseAuthentication();
 

@@ -60,9 +60,9 @@ namespace Api.Controllers;
 				{ JwtClaimTypes.Email, user.Email}
 			}, _configuration["JWT:Key"]);
 
+			
 
-
-				return Ok(new AuthResponse { token = token, FirstName = user.FirstName });
+				return Ok(new AuthResponse { token = token, FirstName = user.FirstName , RoleId = user.Roles.roleId, UserId=user.UserId });
 			}
 			else
 			{
@@ -91,7 +91,7 @@ namespace Api.Controllers;
 			await _userrepository.AddAsync(userEntity);
 			//var users = mapper.Map<UserDTO>(userEntity);
 
-			return Ok("Registration Successful");
+			return Ok(new {roleId=userEntity.roleId});
 		}
 		private string HashPassword(string password)
 		{
